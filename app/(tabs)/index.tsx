@@ -1,21 +1,40 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { Button, FlatList, Text, View } from 'react-native';
+import { Button, FlatList, Text, View, TextInput } from 'react-native';
+import Constants from "expo-constants"
 
 /* 1️⃣ MODELO — sempre no topo */
 interface Lancamento {
   valor: number;
   tipo: 'entrada' | 'saida';
+  descricao: string;
   data: string;
 }
 
 export default function App() {
 
-  /* 2️⃣ ESTADOS */
+  const [theme, setTheme] = useState<"light" | "dark">('light') 
   const [contador, setContador] = useState(0);
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
+  const [descricao, setDescricao] = useState('')
+  // Versão do app
+  const versionApp=Constants.expoConfig?.version
 
-  /* 3️⃣ RENDERIZAÇÃO DO ITEM */
+
+  // FN pra salvar o thema 
+  async function SaveTheme(value:"light" | "dark" ){
+    setTheme(value)
+    await AsyncStorage.setItem('theme', value)
+  }
+
+  async function LoadTheme(){
+    const storageTheme=await AsyncStorage.getItem('theme')
+     
+    if(storageTheme==="light" || storageTheme==="dark"){
+      setTheme(storageTheme)
+    }
+  }
+
   function renderLancamento({ item }: { item: Lancamento }) {
     return (
       <View
@@ -29,12 +48,13 @@ export default function App() {
         <Text>
           {item.tipo.toUpperCase()} — R$ {item.valor}
         </Text>
+        <Text>{item.descricao}</Text>
         <Text>{item.data}</Text>
       </View>
     );
   }
 
-  /* 4️⃣ ADICIONAR LANÇAMENTO */
+  /* add LANÇAMENTO */
   async function addValor(lancamento: Lancamento) {
     const novaLista = [...lancamentos, lancamento];
     setLancamentos(novaLista);
@@ -45,7 +65,7 @@ export default function App() {
     );
   }
 
-  /* 5️⃣ CONTADOR (LEGADO / TESTE) */
+  /*  CONTADOR (LEGADO / build) */
   async function Save() {
     const newValue = contador + 1;
     setContador(newValue);
@@ -64,35 +84,67 @@ export default function App() {
     setContador(0);
   }
 
-  /* 6️⃣ CARREGAR AO INICIAR (IMPORTANTE) */
+  /* CARREGAR AO INICIAR  */
   useEffect(() => {
     Load();
-  }, []); // ← evita loop infinito
+    LoadTheme();
+  }, []);
 
-  /* 7️⃣ UI */
+  const isDark=theme==="dark"
+  const styles={
+    Container:{
+      backgroundColor: isDark ? 'black':'white',
+      flex: 1, 
+      padding: 20
+    }
+    
+  }
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <View style={styles.Container}>
+
+      <Text>Tema:{theme==='dark' ? 'Dark':'Ligth'}</Text>
+      <Button title="Modo Claro ☀️" onPress={() =>SaveTheme('light')} />
+      <Button title="Modo Escuro 🌙" onPress={() => SaveTheme('dark')} />
       <Text>Valor salvo offline: {contador}</Text>
 
       <Button title="Salvar Offline" onPress={Save} />
       <Button title="Limpar Contador" onPress={Clear} />
 
-      <Button
-        title="Entrada +10"
-        onPress={() =>
-          addValor({
-            valor: 10,
-            tipo: 'entrada',
-            data: new Date().toLocaleDateString(),
-          })
-        }
-      />
+      <TextInput
+         placeholder="Descrição (ex: Freela, Mercado)"
+         value={descricao}
+         onChangeText={setDescricao}
+          style={{
+            borderWidth: 1,
+            borderColor: '#ccc',
+            padding: 8,
+            width: '80%',
+            marginBottom: 10,
+            borderRadius: 6,
+          }}
+      ></TextInput>
+     <Button
+      title="Entrada +10"
+      onPress={() => {
+        addValor({
+          valor: 10,
+          tipo: 'entrada',
+          descricao: descricao,
+          data: new Date().toLocaleDateString(),
+        });
+        setDescricao('');
+      }}
+/>
 
       <FlatList
         data={lancamentos}
         renderItem={renderLancamento}
         keyExtractor={(_, index) => index.toString()}
+        style={{ width: '100%',  marginTop:20 }}
       />
+
+    
+      <Text>Versão: {versionApp}</Text>
     </View>
   );
 }

@@ -1,50 +1,47 @@
-# Welcome to your Expo app 👋
+#  App Financeiro Offline
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplicativo mobile simples para controle de **entradas e saídas financeiras**, com persistência de dados **offline**, desenvolvido em **React Native com Expo e TypeScript**.
 
-## Get started
+Este projeto foi criado com foco em **aprendizado prático**, fundamentos sólidos e construção de portfólio profissional.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## Funcionalidades
 
-2. Start the app
+- Registro de lançamentos financeiros (entrada e saída)
+- Armazenamento offline com AsyncStorage
+- Listagem dinâmica dos lançamentos
+- Diferenciação visual entre entradas e saídas
+- Estrutura simples e preparada para evolução
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## Conceitos Aplicados
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- React Hooks (`useState`, `useEffect`)
+- Imutabilidade de estado
+- Tipagem com TypeScript (`interface`)
+- Persistência de dados offline
+- Renderização de listas com `FlatList`
+- Organização de código para escalabilidade
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+---
 
-## Get a fresh project
+## Tecnologias Utilizadas
 
-When you're ready, run:
+- React Native
+- Expo
+- TypeScript
+- AsyncStorage
+- JavaScript (ES6+)
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Estrutura do Projeto
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+```text
+app/
+ ├── (tabs)/
+ │   └── index.tsx
+ ├── components/
+ └── services/
