@@ -4,7 +4,7 @@ import { Button, FlatList, Text, View, TextInput } from 'react-native';
 import Constants from "expo-constants" 
 import { Lancamento } from '../../src/types/Lancamento';
 import {LancamentoParser} from '@/services/lancamentoParser'
-import { AddLancamentosInput } from '@/components/addLancamentosInput';
+
  
 export default function App() {
 
@@ -12,35 +12,22 @@ export default function App() {
   const [contador, setContador] = useState(0);
   const [lancamentos, setLancamentos] = useState<Lancamento[]>([]);
   const [descricao, setDescricao] = useState('')
-  const [erro, setErro] = useState<string | null>(null);
+
 
   // Versão do app
   const versionApp=Constants.expoConfig?.version
 
  
-  async function HandleAddLancamento(texto:string){
-
-    console.log('handleAdd',texto)
-     
-    try{
-      const dados=LancamentoParser(texto)
-      
-      const novoLancamento: Lancamento={
-        ...dados,
-        data:new Date().toLocaleDateString(),
-        
-      }
-
-      const novaLista=[...lancamentos, novoLancamento]
-      setLancamentos(novaLista)
-
-      await AsyncStorage.setItem('Lancamentos', JSON.stringify(novaLista))
-
-
-      setErro(null);
-    } catch (error: any) {
-      setErro(error.message);
-    }
+  async function addPorTexto(texto:string){
+    const dados=LancamentoParser(texto)
+    const novoLancamento: Lancamento = {
+      tipo: dados.tipo,
+      valor: dados.valor,
+      descricao: dados.descricao,
+      data: new Date().toLocaleDateString(),
+    }; 
+    setLancamentos([...lancamentos, novoLancamento])
+ 
   }
   // FN pra salvar o thema 
   async function SaveTheme(value:"light" | "dark" ){
@@ -131,17 +118,40 @@ export default function App() {
   return (
     <View style={styles.Container}>
 
-      <Text>Tema:{theme==='dark' ? 'Dark':'Ligth'}</Text> 
-     
-      <AddLancamentosInput onAdd={HandleAddLancamento}/> 
+      <Text>Tema:{theme==='dark' ? 'Dark':'Ligth'}</Text>
+      <Button title="Modo Claro ☀️" onPress={() =>SaveTheme('light')} />
+      <Button title="Modo Escuro 🌙" onPress={() => SaveTheme('dark')} />
+      <Text>Valor salvo offline: {contador}</Text>
 
-        {erro && (
-        <Text style={{ color: 'red', marginTop: 8 }}>
-        {erro}
-        </Text>
-        )}
-      <Button title="Limpar" onPress={Clear} />
- 
+      <Button title="Salvar Offline" onPress={Save} />
+      <Button title="Limpar Contador" onPress={Clear} />
+
+      <TextInput
+         placeholder="Descrição (ex: Freela, Mercado)"
+         value={descricao}
+         onChangeText={setDescricao}
+          style={{
+            borderWidth: 1,
+            borderColor: '#ccc',
+            padding: 8,
+            width: '80%',
+            marginBottom: 10,
+            borderRadius: 6,
+          }}
+      ></TextInput>
+     <Button
+      title="Entrada +10"
+      onPress={() => {
+        addValor({
+          valor: 10,
+          tipo: 'entrada',
+          descricao: descricao,
+          data: new Date().toLocaleDateString(),
+        });
+        setDescricao('');
+      }}
+/>
+
       <FlatList
         data={lancamentos}
         renderItem={renderLancamento}
