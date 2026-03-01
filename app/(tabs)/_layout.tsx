@@ -5,6 +5,7 @@ import { HapticTab } from '@/components/haptic-tab';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Colors } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -17,36 +18,48 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
       }}>
       <Tabs.Screen
-        name="index"
-        options={{
+        name="painel"
+        options={{ 
           title: 'Painel',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, size, focused }) => 
+          <Ionicons 
+          name={focused ? "grid" : "grid-outline"} 
+          size={size} 
+          color={focused ? "#141414" : "#9ca3af"}
+          />,
         }}
       />
 
-      <Tabs.Screen
-        name="entradas"
-        options={{
-          title: 'Entrou',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      
-      <Tabs.Screen
-        name="saidas"
-        options={{
-          title: 'Saiu',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
 
       <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+      name='entradas'
+      options={{
+        title:'Entradas',
+        tabBarIcon:({color, size, focused})=>
+        <Ionicons
+        name={focused ? 'arrow-down-circle' : 'arrow-down-circle-outline'}
+        size={size} 
+        color={focused ? "#16a34a" : "#9ca3af"}
+        />
+      }}
+      >
+      </Tabs.Screen>
+ 
+      <Tabs.Screen
+      name='saidas'
+      options={{
+        title:'Saídas',
+        tabBarIcon:({color, size, focused})=>
+        <Ionicons
+        name={focused ? 'arrow-up-circle' : 'arrow-up-circle-outline'}
+        size={size}
+        color={focused ? "#dc2626" : "#9ca3af"}
+        />
+      }}
+      >
+      </Tabs.Screen>
+
+    
     </Tabs>
   );
 }
